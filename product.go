@@ -159,7 +159,7 @@ type Product struct {
 	ScansNumber          int           `json:"scans_n"`
 	ServingQuantity      json.Number   `json:"serving_quantity"`
 	ServingSize          string        `json:"serving_size"`
-	SortKey              int           `json:"sortkey"`
+	SortKey              int64         `json:"sortkey"`
 	States               string        `json:"states"`
 	StatesHierarchy      []string      `json:"states_hierarchy"`
 	StatesTags           []string      `json:"states_tags"`
