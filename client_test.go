@@ -5,7 +5,7 @@ import (
 )
 
 func TestClient_newRequest_UserAgent(t *testing.T) {
-	api := NewClient("world", "", "")
+	api := NewClient("world", "", "", "")
 	api.Sandbox()
 
 	if got := api.newRequest("GET", "/api/v0/product/%s.json", "5201051001076"); got.Header.Get("User-Agent") != defaultUserAgent {

@@ -17,6 +17,7 @@ import (
 )
 
 const defaultUserAgent = "OpenFoodFacts - Go - v0.0 - https://github.com/openfoodfacts/openfoodfacts-go"
+const defaultHostname = "openfoodfacts"
 
 var (
 	// ErrNoProduct is an error returned by Client.Product when the product could not be
@@ -38,6 +39,7 @@ type Client struct {
 	live      bool
 	client    *http.Client
 	userAgent string
+	hostname  string
 }
 
 // NewClient returns a Client that is capable of talking to the official OpenFoodFacts database via
@@ -62,7 +64,7 @@ type Client struct {
 // Please set a UserAgent HTTP Header with the name of the app/service querying, the version, system and a URL if
 // you have one, so that you are not blocked by mistake
 // (e.g. CoolFoodApp - Go - Version 1.0 - https://coolfoodapp.com)
-func NewClient(locale, username, password string) Client {
+func NewClient(locale, username, password, hostname string) Client {
 	return Client{
 		locale:    locale,
 		username:  username,
@@ -70,6 +72,7 @@ func NewClient(locale, username, password string) Client {
 		live:      true,
 		client:    &http.Client{},
 		userAgent: defaultUserAgent,
+		hostname:  hostname,
 	}
 }
 
@@ -153,6 +156,7 @@ func (h *Client) newRequest(method, format string, args ...interface{}) *http.Re
 	const scheme string = "https"
 	sub := "ssl-api"
 	tld := "org"
+	hostname := h.hostname
 
 	if !h.live {
 		sub = "world"
@@ -162,8 +166,11 @@ func (h *Client) newRequest(method, format string, args ...interface{}) *http.Re
 	if h.locale != "world" {
 		sub = h.locale
 	}
+	if hostname == "" {
+		hostname = defaultHostname
+	}
 
-	url := fmt.Sprintf("%s://%s.openfoodfacts.%s%s", scheme, sub, tld, path)
+	url := fmt.Sprintf("%s://%s.%s.%s%s", scheme, sub, hostname, tld, path)
 	request, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil
